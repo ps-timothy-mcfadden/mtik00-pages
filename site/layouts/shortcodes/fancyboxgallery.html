@@ -1,0 +1,89 @@
+{{/*
+    ****************************************************************************
+    This shortcode reders a gallery.
+    Params:
+        dirname     : The name of the directory inside /static/galleries (required)
+        popheight   : The height, in pixels, of the pop up window (optional)
+        popwidth    : The width, in pixels, of the pop up window (optional)
+    ****************************************************************************
+*/}}
+
+{{ $.Scratch.Set "popheight" "704" }}
+{{ $.Scratch.Set "popwidth" "804" }}
+
+{{ if .Get "popheight" }}
+    {{ $t := .Get "popheight" }}
+    {{ $.Scratch.Set "popheight" $t }}
+{{ end }}
+
+{{ if .Get "popwidth" }}
+    {{ $t := .Get "popwidth" }}
+    {{ $.Scratch.Set "popwidth" $t }}
+{{ end }}
+
+{{/* Alias the variables for easier replacement */}}
+{{ $height := $.Scratch.Get "popheight" }}
+{{ $width := $.Scratch.Get "popwidth" }}
+
+{{ $fancybox_css := "/fancybox/jquery.fancybox.css?v=2.1.5" | absURL }}
+{{ $fancybox_js  := "/fancybox/jquery.fancybox.pack.js?v=2.1.5" | absURL }}
+{{ $jquery  := "/js/jquery-1.11.1.min.js?v=1.11.1" | absURL }}
+
+{{ $gallery_dir := .Get "dirname" | printf "/galleries/%s" | absURL }}
+{{ $gallery_html := printf "%s/index.html" $gallery_dir }}
+{{ $gallery_preview := printf "%s/album.jpg" $gallery_dir }}
+
+<link rel="stylesheet" href='{{  $fancybox_css }}' type="text/css" media="screen" />
+
+<style type="text/css">
+    #albumpreview {
+        max-width: 500px;
+        max-height: 500px;
+    }
+
+    #clickmetext {
+        position: relative;
+        top: 50px;
+        font-family: serif;
+        font-style: italic;
+        font-weight: bold;
+        font-size: 28px;
+        text-align: left;
+        color: #FF3300;
+        margin-left: 10px;
+    }
+</style>
+
+<div id="clickmetext">
+    <a
+        class="fancybox fancybox.iframe"
+        href="{{ $gallery_html }}" id="img_overlay">Click Me
+    </a>
+</div>
+<a
+    class="fancybox fancybox.iframe"
+    href="{{ $gallery_html }}"
+    id="img_overlay">
+    <img id="albumpreview" src="{{ $gallery_preview }}" alt="album" />
+</a>
+
+<script type="text/javascript" src='{{ $jquery }}'></script>
+<script type="text/javascript" src='{{ $fancybox_js }}'></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $(".fancybox").fancybox({
+        minWidth    : {{ $width }},
+        minHeight   : {{ $height }},
+        fitToView   : true,
+        width       : '80%',
+        height      : '80%',
+        autoSize    : false,
+        closeClick  : false,
+        openEffect  : 'fade',
+        closeEffect : 'none',
+        scrolling: 'none',
+        padding : 0
+    });
+});
+</script>

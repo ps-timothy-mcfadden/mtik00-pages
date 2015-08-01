@@ -1,0 +1,37 @@
+{{ partial "header.html" . }}
+<style type="text/css">
+ul
+{
+    list-style-type: none;
+}
+</style>
+
+<body>
+    <div id="layout" class="pure-g">
+        {{ partial "sidebar.html" . }}
+
+        <div class="content pure-u-1 pure-u-md-3-4">
+            <a name="top"></a>
+            {{ partial "listtop.html" . }}
+
+            <h1>Archives</h1>
+            <div class="posts">
+                <ul>
+                    {{ $Site := .Site }}
+                    {{ range where $Site.Pages "Type" "!=" "staticpage" }}
+                    <li>
+                    <p><a href="{{ .RelPermalink }}">{{ .Date.Format "Jan" }} {{ .Date.Format "2006" }}: {{ .Title }}
+                    {{ if .Params.categories }}
+                        <span class="post-date-month">({{ delimit .Params.categories ", " }})</span>
+                    {{ end }}
+                    </a></p>
+                    </li>
+                {{ end }}
+                </ul>
+            </div>
+            {{ partial "footer.html" . }}
+        </div>
+    </div>
+    {{ partial "bodyend.html" . }}
+</body>
+</html>

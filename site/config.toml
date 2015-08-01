@@ -1,0 +1,55 @@
+baseurl = "https://mtik00.com/"
+languageCode = "en-us"
+title = "mtik00"
+publishdir = "../build"
+disqusShortname = "mtik00"
+theme = "hugo-redlounge"
+
+[taxonomies]
+    post = "posts"
+    category = "categories"
+    archive = "archives"
+
+[params]
+    Copyright = "&copy; Copyright 2015 - Timothy McFadden"
+    sidebartitle = "mtik00"
+    sidebartagline = "Musings on software"
+    socialsharing = true
+    # gaid = "UA-4067506-4"
+
+    # lunr seach parameters
+    lunr = true
+    lunr_source = "/js/lunr.min.js"
+    lunr_index_file = "/js/lunr.index.json"  # You'll need to generate that
+    lunr_min_search_chars = 3  # Minimum number of characters before search begins
+    lunr_max_results = 10  # Maximum number of results to return
+
+[permalinks]
+    posts = "/:year/:month/:slug/"
+
+[[menu.main]]
+    name = "About"
+    url = "/about"
+    weight = 100
+
+[[menu.main]]
+    name = "Archives"
+    url = "/archives"
+    weight = 300
+
+[[menu.social]]
+    pre = "<i class='fa fa-github fa-lg'></i>"
+    url = "https://github.com/mtik00"
+    identifier = "github"
+    weight = -900
+
+[[menu.social]]
+    pre = "<i class='fa fa-linkedin fa-lg'></i>"
+    url = "https://www.linkedin.com/in/timothymcfadden"
+    identifier = "linkedin"
+    weight = -200
+
+[[menu.social]]
+    pre = "<i class='fa fa-stack-overflow fa-lg'></i>"
+    url = "http://stackoverflow.com/users/3696827/mtik00"
+    weight = -400
