@@ -1,35 +1,17 @@
 {{/* This is entirely based on this gist: https://gist.github.com/sebz/efddfc8fdcb6b480f567 */}}
 
 <style type="text/css">
-#search_box {
-    margin: 0 auto;
-}
-
-#search_text {
-    float: left;
-    position: relative;
-    left: 0px;
-}
-
-#search {
-    position: relative;
-    left: 20px;
-}
+#search_box { margin: 0 auto; }
+#search_text { float: left; position: relative; left: 0px; }
+#search { position: relative; left: 20px; }
 </style>
 
-<br>
-<div id="search_box">
-    <div id="search_text">Search:</div>
-    <div><input id="search" type="text"></div>
-</div>
-<ul id="results"></ul>
+<br><div id="search_box"><div id="search_text">Search:</div><div><input id="search" type="text"></div></div><ul id="results"></ul>
 
 <script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="{{ .Site.Params.lunr_source }}"></script>
 <script type="text/javascript">
-var lunrIndex,
-    $results,
-    pagesIndex;
+var lunrIndex, $results, pagesIndex;
 var indexfile = {{ .Site.Params.lunr_index_file }}
 var min_chars = {{ .Site.Params.lunr_min_search_chars }}
 
@@ -115,7 +97,7 @@ function renderResults(results) {
         var $result = $("<li>");
         $result.append($("<a>", {
             href: result.href,
-            text: "» " + result.title
+            text: ">> " + result.title
         }));
         $results.append($result);
     });

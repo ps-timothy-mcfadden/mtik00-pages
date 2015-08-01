@@ -6,13 +6,6 @@ pushd %~dp0..\site
 :: "clean" public_html folder.
 :: rmdir /q /s ..\public_html
 :: sleep 1
-python ..\bin\make-search-index.py && git add ..\site\static\js\lunr.index.json
+python ..\bin\make-search-index.py && git add static\js\lunr.index.json
 hugo -d="..\mtik00.github.io"
-popd
-git push
-
-pushd %~dp0..\mtik00.github.io
-git add -A .
-git commit -am"new content"
-git push
 popd
