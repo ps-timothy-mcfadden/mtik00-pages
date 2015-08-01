@@ -9,6 +9,7 @@ pushd %~dp0..\site
 python ..\bin\make-search-index.py && git add ..\site\static\js\lunr.index.json
 hugo -d="..\mtik00.github.io"
 popd
+git push
 
 pushd %~dp0..\mtik00.github.io
 git add -A .
