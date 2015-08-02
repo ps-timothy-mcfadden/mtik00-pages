@@ -8,4 +8,5 @@ pushd %~dp0..\site
 :: sleep 1
 python ..\bin\make-search-index.py && git add static\js\lunr.index.json
 hugo -d="..\mtik00.github.io"
+:: python ..\bin\minify.py
 popd
