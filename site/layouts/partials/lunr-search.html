@@ -8,8 +8,8 @@
 
 <br><div id="search_box"><div id="search_text">Search:</div><div><input id="search" type="text"></div></div><ul id="results"></ul>
 
-<script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="{{ .Site.Params.lunr_source }}"></script>
+<script type="text/javascript" async src="/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" async src="{{ .Site.Params.lunr_source }}"></script>
 <script type="text/javascript">
 var lunrIndex, $results, pagesIndex;
 var indexfile = {{ .Site.Params.lunr_index_file }}
