@@ -14,7 +14,7 @@ TL;DR
 
 1.  Create a `pages` repo
 1.  Clone it to your local computer
-1.  Check in you static files
+1.  Check in your static files
 1.  Set up your Nginx configuration file
 1.  `git commit -am"..." && git push
 1.  Profit!
