@@ -142,3 +142,7 @@
     color: #999;
     font-style: italic;
 }
+
+code {
+    background-color: #eeeeee;
+}
