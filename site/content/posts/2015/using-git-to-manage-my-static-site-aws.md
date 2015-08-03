@@ -18,7 +18,7 @@ Configuring Hugo
 Configuring the web server
 ==========================
 -  ssh keys
--  sparse repo
+-  sparse repo (`git config core.fileMode false` if writing on Windows and serving from Linux)
 -  synce
 -  publish
 
