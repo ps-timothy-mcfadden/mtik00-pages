@@ -63,7 +63,7 @@ def make():
         local("git add site\static\js\lunr.index.json")
         local('git commit -m"change in index.json"')
     else:
-        puts("no changes in index.json detected")
+        puts(red("no changes in index.json detected"))
 
     local('cd site && ..\\bin\\hugo.exe -d="..\\mtik00.github.io"')
     with cd("mtik00.github.io"):
