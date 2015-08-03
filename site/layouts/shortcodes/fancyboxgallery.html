@@ -12,13 +12,11 @@
 {{ $.Scratch.Set "popwidth" "804" }}
 
 {{ if .Get "popheight" }}
-    {{ $t := .Get "popheight" }}
-    {{ $.Scratch.Set "popheight" $t }}
+    {{ .Get "popheight" | $.Scratch.Set "popheight"}}
 {{ end }}
 
 {{ if .Get "popwidth" }}
-    {{ $t := .Get "popwidth" }}
-    {{ $.Scratch.Set "popwidth" $t }}
+    {{ .Get "popwidth" | $.Scratch.Set "popwidth"}}
 {{ end }}
 
 {{/* Alias the variables for easier replacement */}}
