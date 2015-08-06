@@ -20,10 +20,6 @@ theme = "hugo-redlounge"
 
     # lunr seach parameters
     lunr = true
-    lunr_source = "/js/lunr.min.js"
-    lunr_index_file = "/js/lunr.index.json"  # You'll need to generate that
-    lunr_min_search_chars = 3  # Minimum number of characters before search begins
-    lunr_max_results = 10  # Maximum number of results to return
 
 [permalinks]
     posts = "/:year/:month/:slug/"
