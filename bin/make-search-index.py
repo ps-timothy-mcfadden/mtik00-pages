@@ -1,7 +1,10 @@
 #!/usr/bin/env python2.7
 """
 This script is used to generate a JSON index file of all of the Markdown content
-used by Hugo.  This should be run prior to building the static files.
+used by Hugo for use with Lunr.js.  This should be run prior to building the
+static files.
+
+NOTE: Only TOML is supported, and "draft" content is not considered.
 """
 
 # Imports ######################################################################
@@ -19,8 +22,7 @@ __creationDate__ = "07/29/2015"
 __license__ = "MIT"
 
 
-# Globals ######################################################################
-DEBUG = False
+# Globals ######################################################################DEBUG = False
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 CONTENT_DIR = os.path.join(THIS_DIR, "..", "site", "content")
 OUTFILE = os.path.join(THIS_DIR, "..", "site", "static", "js", "lunr.index.json")
@@ -28,36 +30,58 @@ OUTFILE = os.path.join(THIS_DIR, "..", "site", "static", "js", "lunr.index.json"
 # This list was taken directly from the lunr.js stopWords array.  Lunr is ignoring
 # these, so we might as well remove them from our index.
 IGNORED_WORDS = ["a", "able", "about", "across", "after", "all", "almost", "also", "am", "among", "an", "and", "any", "are", "as", "at", "be", "because", "been", "but", "by", "can", "cannot", "could", "dear", "did", "do", "does", "either", "else", "ever", "every", "for", "from", "get", "got", "had", "has", "have", "he", "her", "hers", "him", "his", "how", "however", "i", "if", "in", "into", "is", "it", "its", "just", "least", "let", "like", "likely", "may", "me", "might", "most", "must", "my", "neither", "no", "nor", "not", "of", "off", "often", "on", "only", "or", "other", "our", "own", "rather", "said", "say", "says", "she", "should", "since", "so", "some", "than", "that", "the", "their", "them", "then", "there", "these", "they", "this", "tis", "to", "too", "twas", "us", "wants", "was", "we", "were", "what", "when", "where", "which", "while", "who", "whom", "why", "will", "with", "would", "yet", "you", "your"]
-INCLUDE_WORDS = ["tim"]
-MIN_WORD_LENGTH = 5  # (Unless it starts with a capital letter)
-PERMALINKS = "/:year/:month/:slug/"
-MIN_PERMALINK_YEAR = 2000  # Hack for my static files.  This way I don't have to parse "type="
 
-ENABLE_STATS = False
-STATS = {}
+# These words will be included regardless of length or inclusion in IGNORED_WORDS
+INCLUDE_WORDS = ["tim"]
+
+# The minimum length of a word to be considered a keyword (not used for words
+# beginning with a capital letter)
+MIN_WORD_LENGTH = 5
+
+# We'll try to infer the "href" for the index based on this setting.
+PERMALINKS = "/:year/:month/:slug/"
+
+# Hack for my static files.  Only posts dated newer this parameter will be
+# considered for the PERMALINKS setting.  Posts older than this parameter will
+# assumed to be "static", located at document root.
+MIN_PERMALINK_YEAR = 2000
+
+# When --stats is enabled, the top X words will be displayed
+TOP_X_WORDS = 10
+
+# Only set this parameter to True if you publish draft content and want it
+# included in the search
+INCLUDE_DRAFTS = False
 
 
 def get_args():
+    """Parse the command-line arguments."""
     parser = argparse.ArgumentParser()
     parser.add_argument('--outfile', help="Path to your generated 'lunr.index.json' file", type=str, default=OUTFILE)
     parser.add_argument("--prettyprint", help="Make you JSON output file easier to read by humans", action="store_true")
     parser.add_argument('--contentdir', help="Path to search for your Markdown files", type=str, default=CONTENT_DIR)
     parser.add_argument('--min-permalink-year', help="Mininum post year to consider for permalink reformat", type=int, default=MIN_PERMALINK_YEAR)
     parser.add_argument("--stats", help="Print some very basic keyword statistics", action="store_true")
+    parser.add_argument("--drafts", help="Include drafts in the index (Only use this if you publish your draft content!)", action="store_true")
     return parser.parse_args()
 
 
 def get_keywords(text, min_word_length=MIN_WORD_LENGTH, ignored_words=IGNORED_WORDS):
-    """This function returns a set of *keywords* found in the text.
+    """This function returns a set of *keywords* found in the text.  An attempt
+    is made to ignore all HTML tags, Markdown link targets, non-words, words
+    less than a minimum length, and words included in the IGNORED_WORDS list.
 
     :param str text: The text you wish to parse
-    :param int min_word_length: The minumum length of words you want returned
+    :param int min_word_length: The minimum length of words you want returned
     :param list ignored_words: Words found in this list will not be returned
     """
-    # Remove any HTML elements
-    text = re.sub("(<.*?>)", "", text)
+    # Remove any HTML tags
+    text = re.sub("(</?.*?>)", "", text)
 
-    # Replace all non-word characters with a space (also get rid of _)
+    # Remove Markdown links (but keep the link text)
+    text = re.sub("\[(.+)\]\(.+?\)", r"\1", text)
+
+    # Replace all non-word characters and underscore with a space
     text = re.sub("[\W_]", " ", text)
 
     # The search is case insensitive, so make things easier by always using LC
@@ -67,8 +91,14 @@ def get_keywords(text, min_word_length=MIN_WORD_LENGTH, ignored_words=IGNORED_WO
     # don't want to needlessly consider a change in order a reason to check in
     # the result again.
     keywords = sorted(
-        set([x for x in text.split() if re.match("^[A-Z]", x) or (x in INCLUDE_WORDS) or ((len(x) > min_word_length) and (x not in ignored_words))]),
-        cmp=lambda x, y: cmp(x.lower(), y.lower()))
+        set([
+            x for x in text.split() if
+            re.match("^[A-Z]", x)  # Words starting w/ a capital are always considered
+            or (x in INCLUDE_WORDS)
+            or ((len(x) > min_word_length) and (x not in ignored_words))
+        ]),
+        cmp=lambda x, y: cmp(x.lower(), y.lower())
+    )
 
     if ENABLE_STATS:
         parse_stats(keywords)
@@ -90,13 +120,13 @@ def parse_stats(keywords):
 def print_stats():
     """Display the collected stats."""
     # http://stackoverflow.com/a/613218
-    sorted_stats = sorted(STATS.items(), key=operator.itemgetter(1), reverse=True)
+    sorted_stats = sorted(STATS.items(), key=operator.itemgetter(1), reverse=True)[:TOP_X_WORDS]
 
     print "===== Statistics ===================================="
     print "    Total number of keywords across all content:", len(STATS)
-    print "    Top 10 keywords:"
-    for keyword, count in sorted_stats[:10]:
-        print "        %s: %i" % (keyword, count)
+    print "    Top %i keywords:" % TOP_X_WORDS
+    for keyword, count in sorted_stats:
+        print "    %20s: %i" % (keyword, count)
 
 
 def get_href(date, path, slug, permalinks=PERMALINKS, min_permalink_year=MIN_PERMALINK_YEAR):
@@ -124,7 +154,7 @@ def get_href(date, path, slug, permalinks=PERMALINKS, min_permalink_year=MIN_PER
     return href
 
 
-def parse(path):
+def parse(path, drafts=False):
     """Parses a single Markdown file.
 
     NOTE: Only TOML format is supported!
@@ -132,16 +162,19 @@ def parse(path):
     Returns a dictionary with keys: ["title", "tags", "content", "href"]
     """
     with open(path, "rb") as fh:
-        text = fh.read()
+        text = fh.read().strip()
+
+    if not re.match("^\+\+\+", text):
+        raise Exception("[%s] doesn't appear to be TOML")
 
     match = re.search("^\+\+\+(?P<header>.*)^\+\+\+(?P<content>.*)", text, re.DOTALL | re.MULTILINE)
     if match:
         header = match.group("header")
-        if "draft = true" in header:
+        if re.search("^\s*draft\s+=\s+true", header, re.MULTILINE) and (not drafts):
             return None
 
-        title = re.search("^title = (?P<quote>['\"])(?P<title>.+?)(?P=quote)", header, re.MULTILINE).group("title")
-        date = re.search("^date = (?P<quote>['\"])(?P<title>.+?)(?P=quote)", header, re.MULTILINE).group("title")
+        title = re.search("^title\s+=\s+(?P<quote>['\"])(?P<title>.+?)(?P=quote)", header, re.MULTILINE).group("title")
+        date = re.search("^date\s+=\s+(?P<quote>['\"])(?P<title>.+?)(?P=quote)", header, re.MULTILINE).group("title")
         date = time.strptime(date[:19], "%Y-%m-%dT%H:%M:%S")
 
         tags_match = re.search("^(categories|tags) = \[(.*?)\]", header, re.MULTILINE)
@@ -186,7 +219,7 @@ def write_json_file(data, path, prettyprint=False):
             fh.write(json.dumps(data))
 
 
-def get_index(basedir):
+def get_index(basedir, drafts=False):
     """Walk `basedir`, searching for any Markdown files.  These files will be
     parsed and returned as a list of dictionaries.
 
@@ -200,7 +233,7 @@ def get_index(basedir):
                 continue
 
             path = os.path.join(root, fname)
-            data = parse(path)
+            data = parse(path, drafts=drafts)
 
             # Only add stuff to the index that has content
             if data and data["content"]:
@@ -214,7 +247,8 @@ if __name__ == '__main__':
 
     args = get_args()
     ENABLE_STATS = args.stats
-    index = get_index(args.contentdir)
+    STATS = {}
+    index = get_index(args.contentdir, drafts=args.drafts)
     write_json_file(index, args.outfile, args.prettyprint)
 
     print "Parsed [%i] files in [%s]" % (len(index), format_timespan(time.time() - tstart))
