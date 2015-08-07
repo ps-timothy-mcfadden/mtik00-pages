@@ -1,4 +1,4 @@
-baseurl = "https://mtik00.com/"
+baseurl = "https://mtik00.com"
 languageCode = "en-us"
 title = "mtik00"
 publishdir = "../build"
