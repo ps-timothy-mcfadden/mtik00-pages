@@ -33,14 +33,14 @@ WP exports everything, but I was only concerned with the post `body`, the date i
 WP puts all of the posts in a \<channel\> element.  Each post is located inside an \<item\> element.  So far, so good!  Now all we need to do is to loop through each item and grab the data we need.
 
 {{< highlight python >}}
-def wp_to_hugo_date(wp_date, tz_direction=-1):
+def wp_to_hugo_date(wp_date):
     """Converts a UTC time string from the WordPress XML to a Hugo time string."""
     date = time.strptime(wp_date, "%a, %d %b %Y %H:%M:%S +0000")
     date = calendar.timegm(date)
     ltime = time.localtime(date)
     date = time.strftime("%Y-%m-%dT%H:%M:%S", ltime)
 
-    date += "%+03i:00" % (((time.timezone / 3600) - (1 * ltime.tm_isdst)) * tz_direction)
+    date += "%+03i:00" % (-1 * (time.altzone / 3600) if time.daylight else (-1 * (time.timezone / 3600)))
     return ltime, date
 {{< /highlight >}}
 
