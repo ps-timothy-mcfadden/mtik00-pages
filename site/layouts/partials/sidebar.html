@@ -1,76 +1,10 @@
 {{/*
     NOTE: This has been heavily modified from the default redlounge theme.
     This new sidebar allows dropdown menus and doesn't use the "nav-item*"
-    CSS elements.
+    CSS elements.  It also add the Lunr JS search elements.
 
     This template only supports a single level of sub-menus from [[menu.main]].
 */}}
-
-<style type="text/css">
-/*    #primary_nav_wrap
-    {
-        margin-top:15px
-    }
-
-    #primary_nav_wrap ul
-    {
-        margin:0;
-        padding:0;
-        list-style:none;
-        padding-bottom: 1rem;
-        position:relative;
-        float:left;
-    }
-
-    #primary_nav_wrap ul a
-    {
-        background: transparent;
-        color: #fff;
-        margin-top: 1rem;
-        letter-spacing: 0.05rem;
-        text-transform: uppercase;
-        font-size: 0.85rem;
-        text-decoration: none;
-        margin-right: 0.1rem;
-        line-height: 1.5rem;
-    }
-
-    #primary_nav_wrap ul li
-    {
-        display: inline-block;
-        *display: inline;
-        zoom: 1;
-    }
-
-    #primary_nav_wrap ul li:hover
-    {
-        text-decoration: none;
-        background:#8b8b8b
-    }
-
-    #primary_nav_wrap ul ul
-    {
-        display:none;
-        position:absolute;
-        top:20;
-        left:0;
-        background:#2d303b;
-        padding:0
-    }
-
-    #primary_nav_wrap ul ul li
-    {
-        float:none;
-        width:200px
-    }
-
-    #primary_nav_wrap ul li:hover > ul
-    {
-        display:block
-    }
-*/
-#primary_nav_wrap{margin-top:15px}#primary_nav_wrap ul{margin:0;padding:0;list-style:none;padding-bottom:1rem;position:relative;float:left}#primary_nav_wrap ul a{background:transparent;color:#fff;margin-top:1rem;letter-spacing:.05rem;text-transform:uppercase;font-size:.85rem;text-decoration:none;margin-right:.1rem;line-height:1.5rem}#primary_nav_wrap ul li{display:inline-block;*display:inline;zoom:1}#primary_nav_wrap ul li:hover{text-decoration:none;background:#8b8b8b}#primary_nav_wrap ul ul{display:none;position:absolute;top:20px;left:0;background:#2d303b;padding:0}#primary_nav_wrap ul ul li{float:none;width:200px}#primary_nav_wrap ul li:hover > ul{display:block}
-</style>
 
 <div class="sidebar pure-u-1 pure-u-md-1-4">
   <div class="header">
@@ -82,7 +16,7 @@
     <nav id="primary_nav_wrap">
       <ul>
         {{ $currentNode := . }}
-        <li><span class="nav-item-separator">//</span><a href="{{ .Site.BaseURL }}">Home</a></li>
+        <li><span class="nav-item-separator">//</span><a href="/">Home</a></li>
         {{ range .Site.Menus.main }}
             {{ if .HasChildren }}
                 <li>

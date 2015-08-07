@@ -146,3 +146,66 @@
 code {
     background-color: #eeeeee;
 }
+
+/* Add drop down to navigation */
+#primary_nav_wrap
+{
+    margin-top:15px
+}
+
+#primary_nav_wrap ul
+{
+    margin:0;
+    padding:0;
+    list-style:none;
+    padding-bottom: 1rem;
+    position:relative;
+    float:left;
+}
+
+#primary_nav_wrap ul a
+{
+    background: transparent;
+    color: #fff;
+    margin-top: 1rem;
+    letter-spacing: 0.05rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    text-decoration: none;
+    margin-right: 0.1rem;
+    line-height: 1.5rem;
+}
+
+#primary_nav_wrap ul li
+{
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+}
+
+#primary_nav_wrap ul li:hover
+{
+    text-decoration: none;
+    background:#8b8b8b
+}
+
+#primary_nav_wrap ul ul
+{
+    display:none;
+    position:absolute;
+    top:20;
+    left:0;
+    background:#2d303b;
+    padding:0
+}
+
+#primary_nav_wrap ul ul li
+{
+    float:none;
+    width:200px
+}
+
+#primary_nav_wrap ul li:hover > ul
+{
+    display:block
+}
