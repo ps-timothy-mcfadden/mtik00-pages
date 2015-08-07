@@ -1,0 +1,13 @@
+#search_box {
+    margin: 0 auto;
+}
+
+#search_text {
+    float: left;
+    position: relative;
+    left: 0px;
+}
+
+#search { position: relative;
+    left: 20px;
+}

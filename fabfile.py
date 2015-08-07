@@ -4,6 +4,8 @@ This script is used to control deployment of my static HTML site.
 """
 # Imports ######################################################################
 import os
+import re
+import time
 from fabric.api import local, env, task
 from fabric.colors import red
 from fabric.context_managers import lcd
@@ -19,6 +21,7 @@ __license__ = "MIT"
 # Globals ######################################################################
 MAIN_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.abspath(os.path.join(MAIN_DIR, "mtik00.github.io"))
+BIN_DIR = os.path.abspath(os.path.join(MAIN_DIR, "bin"))
 
 
 # Fabric environment setup #####################################################
@@ -37,9 +40,28 @@ def pull():
 
 
 @task
+def clean():
+    """Removes all generated files in the static folder"""
+    for root, dirs, files in os.walk(STATIC_DIR, topdown=False):
+
+        # Keep the .git folder
+        if re.search("\.git(\\\\|$)", root):
+            continue
+
+        for name in files:
+            os.remove(os.path.join(root, name))
+
+        for name in [x for x in dirs if x != ".git"]:
+            os.rmdir(os.path.join(root, name))
+
+    time.sleep(1)
+
+
+@task
 def minify():
     """Minifies HTML/JS/CSS & fingerprints assets"""
-    local("python bin\\minify.py %s" % STATIC_DIR)
+    script = os.path.join(BIN_DIR, "minify.py")
+    local("python %s %s" % (script, STATIC_DIR))
 
 
 @task

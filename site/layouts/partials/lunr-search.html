@@ -1,10 +1,5 @@
 {{/* This is entirely based on this gist: https://gist.github.com/sebz/efddfc8fdcb6b480f567 */}}
-
-<style type="text/css">
-#search_box { margin: 0 auto; }
-#search_text { float: left; position: relative; left: 0px; }
-#search { position: relative; left: 20px; }
-</style>
+<link rel="stylesheet" href="{{ .Site.BaseURL }}/css/lunr-search.css">
 
 <br><div id="search_box"><div id="search_text">Search:</div><div><input id="search" type="text"></div></div><ul id="results"></ul>
 
