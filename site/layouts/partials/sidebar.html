@@ -16,7 +16,7 @@
     <nav id="primary_nav_wrap">
       <ul>
         {{ $currentNode := . }}
-        <li><span class="nav-item-separator">//</span><a href="/">Home</a></li>
+        <li><span class="nav-item-separator">//</span><a href="{{ .Site.BaseURL }}">Home</a></li>
         {{ range .Site.Menus.main }}
             {{ if .HasChildren }}
                 <li>
