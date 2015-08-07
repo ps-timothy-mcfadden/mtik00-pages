@@ -4,7 +4,7 @@ This script is used to run all HTML files in a directory through `htmlmin`,
 css files through `csscompressor`, and all js files through `slimit`.
 
 CSS and JS files are fingerprinted, and the names are changed.  If
-MIN_INLINE_BYTES is non-zero, CSS and JS files that are under this many bytes
+--max-inline-bytes is non-zero, CSS and JS files that are under this many bytes
 will be inlined in HTML source.  Otherwise, the fingerprinted URL will be
 inserted instead.
 """
@@ -12,7 +12,6 @@ inserted instead.
 # Imports ######################################################################
 import os
 import re
-import base64
 import htmlmin
 import argparse
 from slimit import minify
@@ -27,9 +26,6 @@ __license__ = "MIT"
 
 
 # Globals ######################################################################
-DEBUG = False
-MIN_INLINE_BYTES = 4096
-FINGERPRINT_NONMIN = True
 
 
 def get_args():
@@ -38,7 +34,9 @@ def get_args():
     parser.add_argument('--static-dir', help="The base directory to process", type=str, required=True)
     parser.add_argument("--no-fingerprint-nonmin", help="Don't fingerprint non-minimized content", dest="fingerprint_nonmin", action="store_false")
     parser.add_argument("--no-htmlmin", help="Don't minimize the final HTML", dest="do_htmlmin", action="store_false")
-    parser.set_defaults(fingerprint_nonmin=True, do_htmlmin=True)
+    parser.add_argument("--no-inline", help="Don't inline any files", dest="do_inline", action="store_false")
+    parser.add_argument("--max-inline-bytes", help="All files smaller than this will be inlined", type=int, default=4096)
+    parser.set_defaults(fingerprint_nonmin=True, do_htmlmin=True, do_inline=True)
     return parser.parse_args()
 
 
@@ -58,11 +56,15 @@ def is_minimized(path):
     return (".min" in fname) or (".pack" in fname)
 
 
-def fingerprint(data):
-    """Returns the hexdigest of the MD5 hash of the data"""
+def fingerprint(data, number_of_chars=10):
+    """Returns the first 10 characters hexdigest of the MD5 hash of the data.
+
+    We truncate the hash because: a) we don't care about collisions; b) we
+    don't need really long filenames to enable fingerprint-based-caching.
+    """
     m = md5()
     m.update(data)
-    return base64.urlsafe_b64encode(m.digest()[0:10])[:-2]
+    return m.hexdigest()[0:number_of_chars]
 
 
 def process_js(base_dir, fingerprint_nonminimized=True):
@@ -157,9 +159,10 @@ def process_css(base_dir, fingerprint_nonminimized=True):
     return css_map
 
 
-def do_inline(new_map):
+def do_inline(new_map, max_bytes=None):
     """Returns True if we think you should inline the file, False otherwise."""
-    return (MIN_INLINE_BYTES and (new_map["size"] <= MIN_INLINE_BYTES))
+    max_bytes = MAX_INLINE_BYTES if max_bytes is None else max_bytes
+    return (max_bytes and (new_map["size"] <= max_bytes))
 
 
 def shortend_path(path):
@@ -232,6 +235,12 @@ def process_html(base_dir, css_map, js_map, do_htmlmin=True):
 
 if __name__ == '__main__':
     args = get_args()
+
+    if not args.do_inline:
+        MAX_INLINE_BYTES = 0
+    else:
+        MAX_INLINE_BYTES = args.max_inline_bytes
+
     css_map = process_css(args.static_dir, args.fingerprint_nonmin)
     js_map = process_js(args.static_dir, args.fingerprint_nonmin)
     process_html(args.static_dir, css_map, js_map, args.do_htmlmin)
