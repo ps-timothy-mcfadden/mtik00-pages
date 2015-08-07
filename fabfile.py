@@ -23,6 +23,7 @@ MAIN_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.abspath(os.path.join(MAIN_DIR, "mtik00.github.io"))
 BIN_DIR = os.path.abspath(os.path.join(MAIN_DIR, "bin"))
 HTMLMIN = True
+JSON_PRETTY = False
 
 
 # Fabric environment setup #####################################################
@@ -33,10 +34,11 @@ env.colorize_errors = True
 @task
 def dev():
     """clean, make, minify w/ no html min"""
-    global HTMLMIN
+    global HTMLMIN, JSON_PRETTY
+    HTMLMIN = False
+    JSON_PRETTY = True
     execute(clean)
     execute(make)
-    HTMLMIN = False
     execute(minify)
 
 
@@ -91,7 +93,14 @@ def build():
 def make():
     """Makes the search index and builds the static files"""
     with lcd(MAIN_DIR):
-        local("python bin\\make-search-index.py")
+        params = []
+        if JSON_PRETTY:
+            params.append("--pretty")
+
+        if params:
+            local("python bin\\make-search-index.py %s" % ' '.join(params))
+        else:
+            local("python bin\\make-search-index.py")
 
         if local("git status site\static\js\lunr.index.json --porcelain", capture=True):
             local("git add site\static\js\lunr.index.json")
