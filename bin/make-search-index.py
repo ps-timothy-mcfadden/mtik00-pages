@@ -53,6 +53,14 @@ TOP_X_WORDS = 10
 # included in the search
 INCLUDE_DRAFTS = False
 
+# By default, Hugo makes folders for your content (http://gohugo.io/extras/urls/)
+# The HREFs stored in the index *should* always end with a slash (e.g.
+# /posts/content1/).  If you run into trouble with this, you can turn this off.
+# NOTE: Depending on how you are serving your pages, turning this off can cause
+# 301 redirects to unwanted locations (e.g. a custom domain could redirect to
+# <username>.github.io).
+FORCE_TRAILING_SLASH = True
+
 
 def get_args():
     """Parse the command-line arguments."""
@@ -138,14 +146,20 @@ def get_href(date, path, slug, permalinks=PERMALINKS, min_permalink_year=MIN_PER
     slug = slug or fname[:-3]
 
     if (not permalinks) or (date.tm_year < min_permalink_year):
-        return "/" + slug
+        href = "/" + slug
+
+        if FORCE_TRAILING_SLASH and (not href.endswith("/")):
+            href += "/"
+
+        return href
 
     href = permalinks
     href = href.replace(":year", "%04i" % date.tm_year)
     href = href.replace(":month", "%02i" % date.tm_mon)
     href = href.replace(":slug", slug)
 
-    if href.endswith("/"):
+    # We need to add the trailing slash so we don't get 301 redirects.
+    if FORCE_TRAILING_SLASH and (not href.endswith("/")):
         href = href[:-1]
 
     if re.search(":[a-z]", href):
