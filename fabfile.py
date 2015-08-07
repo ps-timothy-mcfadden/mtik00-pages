@@ -22,11 +22,22 @@ __license__ = "MIT"
 MAIN_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.abspath(os.path.join(MAIN_DIR, "mtik00.github.io"))
 BIN_DIR = os.path.abspath(os.path.join(MAIN_DIR, "bin"))
+HTMLMIN = True
 
 
 # Fabric environment setup #####################################################
 env.colorize_errors = True
 ################################################################################
+
+
+@task
+def dev():
+    """clean, make, minify w/ no html min"""
+    global HTMLMIN
+    execute(clean)
+    execute(make)
+    HTMLMIN = False
+    execute(minify)
 
 
 @task
@@ -61,7 +72,11 @@ def clean():
 def minify():
     """Minifies HTML/JS/CSS & fingerprints assets"""
     script = os.path.join(BIN_DIR, "minify.py")
-    local("python %s %s" % (script, STATIC_DIR))
+
+    if HTMLMIN:
+        local("python %s --static-dir %s" % (script, STATIC_DIR))
+    else:
+        local("python %s --static-dir %s --no-htmlmin" % (script, STATIC_DIR))
 
 
 @task
@@ -74,6 +89,7 @@ def build():
 
 @task
 def make():
+    """Makes the search index and builds the static files"""
     with lcd(MAIN_DIR):
         local("python bin\\make-search-index.py")
 
@@ -84,6 +100,14 @@ def make():
             puts(red("no changes in index.json detected"))
 
     execute(build)
+
+
+@task
+def makeall():
+    """clean, make, and minify"""
+    execute(clean)
+    execute(make)
+    execute(minify)
 
 
 @task
