@@ -37,6 +37,12 @@ def pull():
 
 
 @task
+def minify():
+    """Minifies HTML/JS/CSS & fingerprints assets"""
+    local("python bin\\minify.py %s" % STATIC_DIR)
+
+
+@task
 def build():
     """Builds the static files in mtik00.github.io"""
     site = os.path.join(MAIN_DIR, "site")
