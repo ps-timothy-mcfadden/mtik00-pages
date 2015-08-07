@@ -92,16 +92,14 @@ def get_keywords(text, min_word_length=MIN_WORD_LENGTH, ignored_words=IGNORED_WO
     # Replace all non-word characters and underscore with a space
     text = re.sub("[\W_]", " ", text)
 
-    # The search is case insensitive, so make things easier by always using LC
-    text = text.lower()
-
     # Return the sorted set, since set()'s order is non-deterministic and we
     # don't want to needlessly consider a change in order a reason to check in
     # the result again.
+    words = text.split()
     keywords = sorted(
         set([
-            x for x in text.split() if
-            re.match("^[A-Z]", x)  # Words starting w/ a capital are always considered
+            x.lower() for x in words if
+            re.match("^[A-Z][a-z]{3}", x)  # Capitalized words w/ 3 or more characters are always considered
             or (x in INCLUDE_WORDS)
             or ((len(x) > min_word_length) and (x not in ignored_words))
         ]),
