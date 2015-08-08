@@ -22,7 +22,7 @@ __creationDate__ = "07/29/2015"
 __license__ = "MIT"
 
 
-# Globals ######################################################################DEBUG = False
+# Globals ######################################################################
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 CONTENT_DIR = os.path.join(THIS_DIR, "..", "site", "content")
 OUTFILE = os.path.join(THIS_DIR, "..", "site", "static", "js", "lunr.index.json")
