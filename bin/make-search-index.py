@@ -68,7 +68,7 @@ def get_args():
     parser.add_argument('--outfile', help="Path to your generated 'lunr.index.json' file", type=str, default=OUTFILE)
     parser.add_argument("--prettyprint", help="Make you JSON output file easier to read by humans", action="store_true")
     parser.add_argument('--contentdir', help="Path to search for your Markdown files", type=str, default=CONTENT_DIR)
-    parser.add_argument('--min-permalink-year', help="Mininum post year to consider for permalink reformat", type=int, default=MIN_PERMALINK_YEAR)
+    parser.add_argument('--min-permalink-year', help="Minimum post year to consider for permalink reformat", type=int, default=MIN_PERMALINK_YEAR)
     parser.add_argument("--stats", help="Print some very basic keyword statistics", action="store_true")
     parser.add_argument("--drafts", help="Include drafts in the index (Only use this if you publish your draft content!)", action="store_true")
     return parser.parse_args()
