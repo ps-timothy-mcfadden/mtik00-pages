@@ -17,7 +17,7 @@ theme = "hugo-redlounge"
     socialsharing = true
     gaid = "UA-4067506-4"
 
-    # lunr seach parameters
+    # lunr search parameters
     lunr = true
 
 [permalinks]
@@ -49,3 +49,9 @@ theme = "hugo-redlounge"
     pre = "<i class='fa fa-stack-overflow fa-lg'></i>"
     url = "http://stackoverflow.com/users/3696827/mtik00"
     weight = -400
+
+[[menu.social]]
+    pre = "<i class='fa fa-rss fa-lg'></i>"
+    url = "/index.xml"
+    identifier = "rss"
+    weight = -100
