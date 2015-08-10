@@ -19,3 +19,5 @@ I have that line wrapped in a batch file that I can run called `htime.bat`.
 It's quick and easy!  It's *slightly* easier than just changing it with your text editor.
 
 NOTE: This command only takes into consideration timezones that change on the hour!  Sorry [India](http://www.timeanddate.com/worldclock/india/new-delhi) (and more)...
+
+UPDATE 8/10/2015: I just came across the [`hugo undraft`](https://gohugo.io/commands/hugo_undraft/) command that does basically the same thing.
