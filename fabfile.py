@@ -122,6 +122,11 @@ def makeall():
 @task
 def release():
     """Commits and pushes static files, if needed"""
+
+    # Check for local changes that need to be pushed
+    if re.search("ahead of .* by \d+ commit", local('git status', capture=True)):
+        local("git push")
+
     with lcd(STATIC_DIR):
         if local('git status --porcelain', capture=True):
             local("git add --all .")
