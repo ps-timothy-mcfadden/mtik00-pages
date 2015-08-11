@@ -4,6 +4,7 @@ title = "mtik00"
 publishdir = "../build"
 disqusShortname = "mtik00"
 theme = "hugo-redlounge"
+pygmentsstyle = "friendly"
 
 [taxonomies]
     post = "posts"
