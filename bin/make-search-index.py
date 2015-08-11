@@ -25,7 +25,7 @@ __license__ = "MIT"
 # Globals ######################################################################
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 CONTENT_DIR = os.path.join(THIS_DIR, "..", "site", "content")
-OUTFILE = os.path.join(THIS_DIR, "..", "site", "static", "js", "lunr.index.json")
+OUTFILE = os.path.join(THIS_DIR, "..", "site", "static", "js", "lunr-index.json")
 
 # This list was taken directly from the lunr.js stopWords array.  Lunr is ignoring
 # these, so we might as well remove them from our index.
@@ -65,7 +65,7 @@ FORCE_TRAILING_SLASH = True
 def get_args():
     """Parse the command-line arguments."""
     parser = argparse.ArgumentParser()
-    parser.add_argument('--outfile', help="Path to your generated 'lunr.index.json' file", type=str, default=OUTFILE)
+    parser.add_argument('--outfile', help="Path to your generated 'lunr-index.json' file", type=str, default=OUTFILE)
     parser.add_argument("--prettyprint", help="Make you JSON output file easier to read by humans", action="store_true")
     parser.add_argument('--contentdir', help="Path to search for your Markdown files", type=str, default=CONTENT_DIR)
     parser.add_argument('--min-permalink-year', help="Minimum post year to consider for permalink reformat", type=int, default=MIN_PERMALINK_YEAR)

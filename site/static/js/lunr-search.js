@@ -1,5 +1,5 @@
 var lunrIndex, $results, pagesIndex;
-var indexfile = "/js/lunr.index.json"
+var indexfile = "/js/lunr-index.json"
 var min_chars = 3
 
 // Initialize lunrjs using our generated index file

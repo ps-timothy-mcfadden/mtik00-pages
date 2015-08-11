@@ -26,6 +26,11 @@ __license__ = "MIT"
 
 
 # Globals ######################################################################
+# This data structure holds files that should be fingerprinted, and a list of
+# files where the URL exists (so we don't have to search every single file).
+OTHER_FINGERPRINTS = {
+    "/js/lunr-index.json": ["/js/lunr-search.js"]
+}
 
 
 def get_args():
@@ -192,11 +197,17 @@ def remap_css(text, css_map, html_file, unlink_files):
 def remap_js(text, js_map, html_file, unlink_files):
     """Remaps or inlines new JS files."""
     for old, new in js_map.items():
-        match = re.search("""(<script type=.?text/javascript.*?%s.*?</script>)""" % old, text)
+        skip_inline = False
+
+        if old.endswith(".js"):
+            match = re.search("""(<script type=.?text/javascript.*?%s.*?</script>)""" % old, text)
+        elif old.endswith(".json"):
+            match = re.search('"%s"' % old, text)
+            skip_inline = True
 
         if not match:
             continue
-        elif do_inline(new):
+        elif do_inline(new) and (not skip_inline):
             print "inlining [%s] in [%s]" % (old, shortend_path(html_file))
             fname = os.path.splitext(os.path.split(old)[1])[0]
             new_js = """<script type="text/javascript" title="%s">%s</script>""" % (fname, slurp(new["path"]))
@@ -233,6 +244,37 @@ def process_html(base_dir, css_map, js_map, do_htmlmin=True):
     for unlink_file in unlink_files:
         os.unlink(unlink_file)
 
+
+def process_other_fingerprints(static_dir, fingerprints):
+    """Process the fingerprints that need a bit more finesse than straight
+    automatic.
+    """
+    for old, files in fingerprints.items():
+        fpath = os.path.join(static_dir, *old.split("/"))
+        if not os.path.exists(fpath):
+            continue
+
+        data = slurp(fpath)
+        dirname, fname = os.path.split(fpath)
+        fbase, fext = os.path.splitext(fname)
+
+        fprint = fingerprint(data)
+        new_fname = "%s-%s%s" % (fbase, fprint, fext)
+        new_path = os.path.join(dirname, new_fname)
+        new_url = new_path[len(static_dir):].replace("\\", "/")
+
+        os.rename(fpath, new_path)
+
+        for file_ in files:
+            new_file_path = os.path.join(static_dir, *file_.split("/"))
+            text = slurp(new_file_path)
+            if old in text:
+                text = text.replace(old, new_url)
+
+                with open(new_file_path, "wb") as fh:
+                    fh.write(text)
+
+
 if __name__ == '__main__':
     args = get_args()
 
@@ -241,6 +283,7 @@ if __name__ == '__main__':
     else:
         MAX_INLINE_BYTES = args.max_inline_bytes
 
+    process_other_fingerprints(args.static_dir, OTHER_FINGERPRINTS)
     css_map = process_css(args.static_dir, args.fingerprint_nonmin)
     js_map = process_js(args.static_dir, args.fingerprint_nonmin)
     process_html(args.static_dir, css_map, js_map, args.do_htmlmin)

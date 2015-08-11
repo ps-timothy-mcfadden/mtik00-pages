@@ -102,8 +102,8 @@ def make():
         else:
             local("python bin\\make-search-index.py")
 
-        if local("git status site\static\js\lunr.index.json --porcelain", capture=True):
-            local("git add site\static\js\lunr.index.json")
+        if local("git status site\static\js\lunr-index.json --porcelain", capture=True):
+            local("git add site\static\js\lunr-index.json")
             local('git commit -m"change in index.json"')
         else:
             puts(red("no changes in index.json detected"))
