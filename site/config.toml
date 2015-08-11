@@ -53,6 +53,6 @@ pygmentsstyle = "friendly"
 
 [[menu.social]]
     pre = "<i class='fa fa-rss fa-lg'></i>"
-    url = "/index.xml"
+    url = "http://feeds.feedburner.com/mtik00"
     identifier = "rss"
     weight = -100
