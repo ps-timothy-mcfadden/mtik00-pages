@@ -140,5 +140,5 @@ def release():
 @task
 def deploy():
     """make and release"""
-    execute(make)
+    execute(makeall)
     execute(release)
