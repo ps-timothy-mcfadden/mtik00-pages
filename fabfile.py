@@ -6,6 +6,8 @@ This script is used to control deployment of my static HTML site.
 import os
 import re
 import time
+
+import toml
 from fabric.api import local, env, task
 from fabric.colors import red
 from fabric.context_managers import lcd
@@ -23,7 +25,7 @@ MAIN_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.abspath(os.path.join(MAIN_DIR, "mtik00.github.io"))
 BIN_DIR = os.path.abspath(os.path.join(MAIN_DIR, "bin"))
 HTMLMIN = True
-JSON_PRETTY = False
+JSON_PRETTY = True
 
 
 # Fabric environment setup #####################################################
@@ -39,7 +41,6 @@ def dev():
     JSON_PRETTY = True
     execute(clean)
     execute(make)
-    execute(minify)
 
 
 @task
@@ -71,22 +72,25 @@ def clean():
 
 
 @task
-def minify():
-    """Minifies HTML/JS/CSS & fingerprints assets"""
-    script = os.path.join(BIN_DIR, "minify.py")
-
-    if HTMLMIN:
-        local("python %s --static-dir %s" % (script, STATIC_DIR))
-    else:
-        local("python %s --static-dir %s --no-htmlmin" % (script, STATIC_DIR))
-
-
-@task
 def build():
     """Builds the static files in mtik00.github.io"""
     site = os.path.join(MAIN_DIR, "site")
     with lcd(site):
         local('..\\bin\\hugo.exe -d="..\\mtik00.github.io"')
+
+    # Crappy hack for cache-busting the JSON index file.
+    config_toml = os.path.join(MAIN_DIR, "site", 'config.toml')
+    parsed_toml = toml.loads(open(config_toml, 'rb').read())
+    version = parsed_toml['params'].get('static_version')
+
+    if not version:
+        return
+
+    json_file = os.path.join(MAIN_DIR, 'mtik00.github.io', 'js', 'lunr-search.js')
+    text = open(json_file, 'rb').read()
+    text = re.sub('var indexfile = "/js/lunr-index.json"', 'var indexfile = "/js/lunr-index.json%s"' % version, text)
+    with open(json_file, 'wb') as fh:
+        fh.write(text)
 
 
 @task
@@ -105,6 +109,7 @@ def make():
         if local("git status site\static\js\lunr-index.json --porcelain", capture=True):
             local("git add site\static\js\lunr-index.json")
             local('git commit -m"change in index.json"')
+            local('')
         else:
             puts(red("no changes in index.json detected"))
 
@@ -116,7 +121,6 @@ def makeall():
     """clean, make, and minify"""
     execute(clean)
     execute(make)
-    execute(minify)
 
 
 @task

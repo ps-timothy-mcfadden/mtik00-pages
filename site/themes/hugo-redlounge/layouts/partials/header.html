@@ -21,7 +21,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
   <![endif]-->
 
-  <link rel="stylesheet" href="/css/redlounge.css">
+  <link rel="stylesheet" href="/css/redlounge.css{{ .Site.Params.static_version }}">
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
   <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
   <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
@@ -36,12 +36,12 @@
 
   {{ if .Params.lightbox }}
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="/css/lightbox.css">
-  <script src="/js/lightbox.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/lightbox.css{{ .Site.Params.static_version }}">
+  <script src="/js/lightbox.min.js{{ .Site.Params.static_version }}"></script>
   {{ end }}
 
   {{ if .Site.Params.categoriescss }}
-    <link rel="stylesheet" type="text/css" href="{{ .Site.Params.categoriescss }}">
+    <link rel="stylesheet" type="text/css" href="{{ .Site.Params.categoriescss }}{{ .Site.Params.static_version }}">
   {{ end }}
 
   {{ partial "headend.html" . }}

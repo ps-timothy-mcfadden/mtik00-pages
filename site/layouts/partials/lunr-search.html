@@ -1,8 +1,8 @@
 {{/* This is entirely based on this gist: https://gist.github.com/sebz/efddfc8fdcb6b480f567 */}}
-<link rel="stylesheet" href="/css/lunr-search.css">
+<link rel="stylesheet" href="/css/lunr-search.css{{ .Site.Params.static_version }}">
 
 <br><div id="search_box"><div id="search_text">Search:</div><div><input id="search" type="text"></div></div><ul id="results"></ul>
 
-<script type="text/javascript" src="/js/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="/js/lunr.min.js"></script>
-<script type="text/javascript" src="/js/lunr-search.js"></script>
+<script type="text/javascript" src="/js/jquery-1.11.1.min.js{{ .Site.Params.static_version }}"></script>
+<script type="text/javascript" src="/js/lunr.min.js{{ .Site.Params.static_version }}"></script>
+<script type="text/javascript" src="/js/lunr-search.js{{ .Site.Params.static_version }}"></script>
