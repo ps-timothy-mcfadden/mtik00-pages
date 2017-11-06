@@ -109,7 +109,7 @@ def make():
         if local("git status site\static\js\lunr-index.json --porcelain", capture=True):
             local("git add site\static\js\lunr-index.json")
             local('git commit -m"change in index.json"')
-            local('')
+            local('git push')
         else:
             puts(red("no changes in index.json detected"))
 
