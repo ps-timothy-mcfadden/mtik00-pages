@@ -9,4 +9,4 @@ Development environment for mtik00.github.io
 1.  Add it: `git add -A`
 1.  Commit it: `git ci -am"new content"`
 1.  Push it: `git push`
-1.  Build it: `fab release`
+1.  Build it: `fab deploy`
