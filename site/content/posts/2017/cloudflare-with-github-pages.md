@@ -12,6 +12,7 @@ because, why not?
 NOTE: If you don't have a domain, or don't care about CDN/Caching, the
 instructions below are pointless!  Just point people to
 `https://<username>.github.io`!
+<!--more-->
 
 # Why
 
