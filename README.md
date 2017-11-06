@@ -7,6 +7,6 @@ Development environment for mtik00.github.io
 1.  Create a new post: `np`
 1.  Test it: `hugo server --watch --source="site" --bind="localhost"`
 1.  Add it: `git add -A`
-1.  Commit it: `git ci -am'new content'`
+1.  Commit it: `git ci -am"new content"`
 1.  Push it: `git push`
 1.  Build it: `fab release`
