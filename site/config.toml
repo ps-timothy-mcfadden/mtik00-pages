@@ -22,7 +22,7 @@ pygmentsstyle = "friendly"
 
     # cache-busting urls.  Set this to "?...." to change all of the URLs for
     # the static content.
-    static_version = "?v2"
+    static_version = "?v3"
 
 [permalinks]
     posts = "/:year/:month/:slug/"
