@@ -16,7 +16,6 @@ pygmentsstyle = "friendly"
     sidebartitle = "mtik00"
     sidebartagline = "Musings on software"
     socialsharing = true
-    gaid = "UA-4067506-4"
 
     # lunr search parameters
     lunr = true
