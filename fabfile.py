@@ -6,8 +6,8 @@ This script is used to control deployment of my static HTML site.
 import os
 import re
 import time
+import zlib
 
-import toml
 from fabric.api import local, env, task
 from fabric.colors import red
 from fabric.context_managers import lcd
@@ -31,6 +31,17 @@ JSON_PRETTY = True
 # Fabric environment setup #####################################################
 env.colorize_errors = True
 ################################################################################
+
+
+def crc(path, offset=0):
+    '''
+    Returns the CRC-32 for the file.
+    '''
+    prev = offset
+    for line in open(path, 'rb'):
+        prev = zlib.crc32(line, prev)
+
+    return prev & 0xFFFFFFFF
 
 
 @task
@@ -78,17 +89,14 @@ def build():
     with lcd(site):
         local('..\\bin\\hugo.exe -d="..\\mtik00.github.io"')
 
-    # Crappy hack for cache-busting the JSON index file.
-    config_toml = os.path.join(MAIN_DIR, "site", 'config.toml')
-    parsed_toml = toml.loads(open(config_toml, 'rb').read())
-    version = parsed_toml['params'].get('static_version')
-
-    if not version:
-        return
-
+    # Hack for cache-busting the JSON index file.  NOTE: We aren't using
+    # the site's ``static_version`` variable since we want to change the JSON
+    # URL when *it* changes, not when we need to change the site.
     json_file = os.path.join(MAIN_DIR, 'mtik00.github.io', 'js', 'lunr-search.js')
+    json_crc = crc(json_file)
+
     text = open(json_file, 'rb').read()
-    text = re.sub('var indexfile = "/js/lunr-index.json"', 'var indexfile = "/js/lunr-index.json%s"' % version, text)
+    text = re.sub('var indexfile = "/js/lunr-index.json"', 'var indexfile = "/js/lunr-index.json?%x"' % json_crc, text)
     with open(json_file, 'wb') as fh:
         fh.write(text)
 
