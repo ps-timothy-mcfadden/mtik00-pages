@@ -58,9 +58,10 @@ The SSH utilities that *don't* use the `.ppk` directly will want to use the
 way to do this is to create a `config` file that tells the utilities which
 keys to use for which hosts.
 
-Run the following command from the command line:
+Run the following command from the command line (careful here, don't delete
+the file if it's already there!):
 {{< highlight batch >}}
-type NUL > %USERPROFILE%\.ssh\config
+type NUL >> %USERPROFILE%\.ssh\config
 {{< / highlight >}}
 
 
