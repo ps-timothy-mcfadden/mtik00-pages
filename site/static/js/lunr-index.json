@@ -74,5 +74,14 @@
             "git"
         ],
         "title": "Windows, Git, and SSH Keys"
+    },
+    {
+        "content": "0xffffffff 2e2cbe84 5849f6f0 8212d43f a66c8271 accepts admittedly already always anyone appended application approaches around article assets assume autoescape be79d92e better between boring bottle browser builds busting cachbuster cache cachebuster cached caching calculate calculated calculates calculating calculation called causes change cleaner cloudflare compare compile compromise computer concepts connection content continue control create creating custom decided default depends developer developers development different disabled discuss download downside during dynamically engines ensure environment especially even everything evidence example excersize existence extended favicon feature features filename filesystemloader filter filters flask frameworks function generally generating google grunt happens headers here imageloader images immediately implementing import indent inheritance inside insights instead internet jakearchibald jinja2 latest little loaded loader loading looking lookup machine manageable measure mechanism method mostly normal options otherwise outfile output overall page partial passed perfect perform popular practices prefer pretty prioritize process python quick reader really recently regard relative release relpath rendered replace requested resource result resulting return returned returns script search second separators server service serving settings showed simple since single slider someimage something somewhere source speeds static stores string taking technique template templates templating that there these they things this true unless updated using version viewers visited webserver website websites what where without your",
+        "href": "/2017/11/jinja2-cache-busting-urls/",
+        "tags": [
+            "web",
+            "python"
+        ],
+        "title": "Jinja2 Cache Busting URLs in Python"
     }
 ]
