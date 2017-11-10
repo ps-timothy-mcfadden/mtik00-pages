@@ -25,7 +25,7 @@ IF EXIST build (
     sleep 1
 )
 
-start hugo server --watch --source="site" --bind="localhost"
+hugo server --watch --source="site" --bind="localhost"
 goto :end
 :: =============================================================================
 

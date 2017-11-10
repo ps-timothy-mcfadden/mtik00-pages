@@ -77,7 +77,7 @@ chose not to just to keep the start process simple and clean.
 Here's my Python function to calculate the
 [CRC32](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) for each of my
 images:
-{{< highlight python >}}
+{{< highlight python "linenos=table">}}
 import zlib
 def build():
     """
@@ -131,7 +131,7 @@ CACHEBUSTER = json.loads(open(THIS_DIR + '/cachbuster.json', 'rb').read())
 
 `CACHEBUSTER` is just the data that was calculated during our build step.
 
-{{< highlight python >}}
+{{< highlight python "linenos=table" >}}
 def imageloader(partial_path):
     '''
     Returns the path with a cachbuster tag if found, or the path otherwise.
@@ -142,11 +142,11 @@ def imageloader(partial_path):
     return '/static/images/' + partial_path
 {{< /highlight >}}
 
-The function `imageloader` is the thing that we'll usee in our Jinja2 templates.
+The function `imageloader` is the thing that we'll use in our Jinja2 templates.
 This function accepts a single input, `partial_path`.  We check for the
-existence of that path in our data.  If we find it, we return a URL with the
-calculation appended as a "query".  If not, we'll assume that the path is
-relative to `/static/images/`.
+existence of that path in our pre-compiled CRC32 data.  If we find it, we
+return a URL with the calculation appended as a "query".  If not, we'll assume
+that the path is relative to `/static/images/`.
 
 Using [our data](#jsonfile) file from above:
 {{< highlight python >}}
@@ -161,15 +161,14 @@ calculation will change, and we'll get a new URL.  Any item that's not
 pre-calculated will be returned like normal.
 
 The last part is to tell Jinja2 about this new filter in `app.py`.
-{{< highlight python >}}
+{{< highlight python "linenos=table" >}}
 jinja2_loader = jinja2.FileSystemLoader(TEMPLATE_DIR)
 jinja2_env = jinja2.Environment(autoescape=True, loader=jinja2_loader)
 jinja2_env.filters['imageloader'] = imageloader
 {{< /highlight >}}
 
-The magic is the `jinja2_env.filters['imageloader'] = imageloader` line.  That
-tells Jinja2 to call our `imageloader()` function any time it sees a filter
-named `imageloader`.
+The magic is `3`.  That tells Jinja2 to call our `imageloader()` function any
+time it sees a filter named `imageloader`.
 
 ## Template Use
 
