@@ -167,8 +167,8 @@ jinja2_env = jinja2.Environment(autoescape=True, loader=jinja2_loader)
 jinja2_env.filters['imageloader'] = imageloader
 {{< /highlight >}}
 
-The magic is `3`.  That tells Jinja2 to call our `imageloader()` function any
-time it sees a filter named `imageloader`.
+The magic is line number `3`.  That tells Jinja2 to call our `imageloader()`
+function any time it sees a filter named `imageloader`.
 
 ## Template Use
 
